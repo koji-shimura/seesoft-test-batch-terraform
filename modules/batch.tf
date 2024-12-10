@@ -1,6 +1,6 @@
 ### batch compute environment
 resource "aws_batch_compute_environment" "compute_environment" {
-  depends_on = [aws_security_group.security_group, aws_iam_role.iam_role]
+  depends_on = [aws_security_group.security_groups, aws_iam_role.roles]
 
   compute_environment_name = var.project
   type                     = "MANAGED"
