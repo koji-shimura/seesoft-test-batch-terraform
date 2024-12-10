@@ -6,7 +6,8 @@ variable "account_id" {}
 variable "configs" {}
 
 data "template_file" "ci_assume_policy" {
-  template = file("./json/ci_assume_policy.json")
+  template = file("${path.module}/json/ci_assume_policy.json")
+
   vars = {
     ci_provider_arn = var.configs.ci.provider_arn
     ci_org_name     = var.configs.org_name
@@ -15,7 +16,7 @@ data "template_file" "ci_assume_policy" {
 }
 
 data "template_file" "ci_policy" {
-  template = file("./json/ci_policy.json")
+  template = file("${path.module}/json/ci_policy.json")
   vars = {
     ecr_arn = aws_ecr_repository.ecr_repository.arn
   }
