@@ -1,6 +1,6 @@
 ### ECR
 resource "aws_ecr_repository" "ecr_repository" {
-  name                 = var.common_tags.project
+  name                 = var.project
   image_tag_mutability = "MUTABLE"
 }
 
