@@ -8,7 +8,7 @@ variable "configs" {}
 data "aws_subnet" "private_subnets" {
   for_each = var.configs.private_subnets_tagnames
 
-  vpc_id = var.configs.vpc_id
+  vpc_id = var.vpc_id
   filter {
     name   = "tag:Name"
     values = [each.value]
