@@ -36,12 +36,12 @@ resource "aws_iam_role_policy_attachment" "ci" {
 
 
 resource "aws_iam_role" "roles" {
-  depends_on = [aws_iam_policy.policies]
+  #depends_on = [aws_iam_policy.policies]
   for_each = {
     compute_env = {
       name        = "${var.project}-compute-env-instance-role",
       path        = "/",
-      description = "Allows EC2 instances in an ECS cluster to access ECS, as instance-role for the computing-environment of ${local.common_tags.project}.",
+      description = "Allows EC2 instances in an ECS cluster to access ECS, as instance-role for the computing-environment of ${var.project}.",
       assume_role_policy = templatefile(
         "${path.module}/json/assume_policy.json",
         { service = "ec2.amazonaws.com" }
