@@ -3,7 +3,7 @@
 provider "aws" {
   region              = local.region
   # SeesoftAWS
-  allowed_account_ids = [local.account_id]
+  allowed_account_ids = ["119395085688"]
 
   default_tags {
     tags = {
