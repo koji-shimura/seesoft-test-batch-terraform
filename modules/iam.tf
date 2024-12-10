@@ -9,7 +9,9 @@ resource "aws_iam_role" "ci" {
       ci_repo_name    = var.project
     }
   )
-  tags               = var.project
+  tags               = {
+    Name = var.project
+  }
 }
 
 ### IAM CI policy
