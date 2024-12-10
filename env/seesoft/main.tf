@@ -49,7 +49,7 @@ locals {
       d = "SS-Test-01.private-1d"
     }
     ci = {
-      provider_arn = "arn:aws:iam:::oidc-provider/token.actions.githubusercontent.com"
+      provider_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:oidc-provider/token.actions.githubusercontent.com"
       org_name     = "koji-shimura"
     }
   }
