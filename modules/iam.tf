@@ -1,8 +1,17 @@
 ### IAM CI role
 resource "aws_iam_role" "ci" {
   name               = "${var.project}-github-actions"
-  assume_role_policy = data.template_file.ci_assume_policy
-  tags               = var.project
+  assume_role_policy = templatefile(
+    "${path.module}/json/ci_assume_policy.json",
+    {
+      ci_provider_arn = var.configs.ci.provider_arn
+      ci_org_name     = var.configs.ci.org_name
+      ci_repo_name    = var.project
+    }
+  )
+  tags               = {
+    Name = var.project
+  }
 }
 
 ### IAM CI policy
@@ -10,7 +19,12 @@ resource "aws_iam_policy" "ci" {
   name        = "${var.project}-github-actions"
   path        = "/"
   description = "${var.project}-github-actions"
-  policy      = data.template_file.ci_policy
+  policy      = templatefile(
+    "${path.module}/json/ci_policy.json",
+    {
+      ecr_arn = aws_ecr_repository.ecr_repository.arn
+    }
+  )
 }
 
 ### IAM CI policy attach
