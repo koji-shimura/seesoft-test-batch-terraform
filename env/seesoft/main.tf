@@ -52,6 +52,11 @@ locals {
       provider_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:oidc-provider/token.actions.githubusercontent.com"
       org_name     = "koji-shimura"
     }
+    batch_computing_env = {
+	    min_vcpus     = 0
+	    max_vcpus     = 1
+	    desired_vcpus = 1
+    }
   }
 }
 
