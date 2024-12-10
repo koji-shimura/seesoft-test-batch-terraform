@@ -1,0 +1,18 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "${ci_provider_arn}"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringLike": {
+                    "token.actions.githubusercontent.com:sub": "repo:${ci_org_name}/${ci_repo_name}:*"
+                }
+            }
+        }
+    ]
+}
