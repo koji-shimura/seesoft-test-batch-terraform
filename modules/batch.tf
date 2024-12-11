@@ -44,38 +44,32 @@ resource "aws_batch_job_queue" "job_queue" {
 }
 
 ### job definition
-#resource "aws_batch_job_definition" "job_definition" {
-#  depends_on = [aws_batch_job_queue.job_queue]
-#
-#  for_each = var.batch_config.batches
-#
-#  name                  = each.value.name
-#  type                  = "container"
-#  platform_capabilities = ["EC2"]
-#  propagate_tags        = true
-#  retry_strategy {
-#    attempts = 1
-#  }
-#  timeout {
-#    attempt_duration_seconds = each.value.duration
-#  }
-#  container_properties = templatefile("${path.module}/batch_job/${each.key}.json",
-#    {
-#      image      = var.batch_config.image,
-#      app_config = var.batch_config.app_config,
-#      role       = aws_iam_role.iam_role.arn,
-#      sentry_dsn = var.batch_config.sentry_dsn,
-#      sentry_env = var.batch_config.sentry_env,
-#      app_name   = each.value.name
-#  })
-#  tags = {
-#    project = local.common_tags.project
-#    Name    = each.value.name
-#  }
-#
-#  lifecycle {
-#    ignore_changes = [
-#      container_properties
-#    ]
-#  }
-#}
+resource "aws_batch_job_definition" "job_definition" {
+  depends_on = [aws_batch_job_queue.job_queue]
+
+  name                  = "${var.project}-job"
+  type                  = "container"
+  platform_capabilities = ["EC2"]
+  propagate_tags        = true
+  retry_strategy {
+    attempts = 1
+  }
+  timeout {
+    attempt_duration_seconds = var.configs.batch.job.timeouts
+  }
+  container_properties = templatefile("${path.module}/json/container.json",
+    {
+      image = var.configs.batch.job.image,
+      role  = aws_iam_role.iam_roles["job"].arn
+  })
+  tags = {
+    project = var.project
+    Name    = "${var.project}-job"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      container_properties
+    ]
+  }
+}

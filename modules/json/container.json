@@ -1,0 +1,12 @@
+{
+    "image": "${image}",
+    "vcpus": 1,
+    "memory": 500,
+    "command": [
+        "python",
+        "main.py",
+        "0"
+    ],
+    "jobRoleArn": "${role}",
+    "readonlyRootFilesystem": true
+}
