@@ -38,7 +38,6 @@ resource "aws_batch_job_queue" "job_queue" {
   priority             = 1
   compute_environments = [aws_batch_compute_environment.compute_environment.arn]
   tags = {
-    project = var.project
     Name    = "${var.project}-queue"
   }
 }
@@ -63,7 +62,6 @@ resource "aws_batch_job_definition" "job_definition" {
       role  = aws_iam_role.roles["job"].arn
   })
   tags = {
-    project = var.project
     Name    = "${var.project}-job"
   }
 
