@@ -9,9 +9,9 @@ resource "aws_batch_compute_environment" "compute_environment" {
   compute_resources {
     type                = "EC2"
     allocation_strategy = "BEST_FIT_PROGRESSIVE"
-    min_vcpus           = var.configs.batch_computing_env.min_vcpus
-    max_vcpus           = var.configs.batch_computing_env.max_vcpus
-    desired_vcpus       = var.configs.batch_computing_env.desired_vcpus
+    min_vcpus           = var.configs.batch.computing_env.min_vcpus
+    max_vcpus           = var.configs.batch.computing_env.max_vcpus
+    desired_vcpus       = var.configs.batch.computing_env.desired_vcpus
     instance_type       = ["optimal"]
     subnets             = [for subnet in data.aws_subnet.private_subnets : subnet.id]
     security_group_ids  = [aws_security_group.security_groups["batch_env"].id]
@@ -30,3 +30,52 @@ resource "aws_batch_compute_environment" "compute_environment" {
     ]
   }
 }
+
+### job queue
+resource "aws_batch_job_queue" "job_queue" {
+  name                 = "${var.project}-queue"
+  state                = "ENABLED"
+  priority             = 1
+  compute_environments = [aws_batch_compute_environment.compute_environment.arn]
+  tags = {
+    project = var.project
+    Name    = "${var.project}-queue"
+  }
+}
+
+### job definition
+#resource "aws_batch_job_definition" "job_definition" {
+#  depends_on = [aws_batch_job_queue.job_queue]
+#
+#  for_each = var.batch_config.batches
+#
+#  name                  = each.value.name
+#  type                  = "container"
+#  platform_capabilities = ["EC2"]
+#  propagate_tags        = true
+#  retry_strategy {
+#    attempts = 1
+#  }
+#  timeout {
+#    attempt_duration_seconds = each.value.duration
+#  }
+#  container_properties = templatefile("${path.module}/batch_job/${each.key}.json",
+#    {
+#      image      = var.batch_config.image,
+#      app_config = var.batch_config.app_config,
+#      role       = aws_iam_role.iam_role.arn,
+#      sentry_dsn = var.batch_config.sentry_dsn,
+#      sentry_env = var.batch_config.sentry_env,
+#      app_name   = each.value.name
+#  })
+#  tags = {
+#    project = local.common_tags.project
+#    Name    = each.value.name
+#  }
+#
+#  lifecycle {
+#    ignore_changes = [
+#      container_properties
+#    ]
+#  }
+#}
