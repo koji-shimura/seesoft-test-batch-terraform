@@ -15,6 +15,16 @@ data "aws_subnet" "private_subnets" {
   }
 }
 
+# VPCエンドポイント(Gateway)用
+data "aws_route_tables" "route_tables" {
+  vpc_id = var.vpc_id
+  filter {
+    name   = "tag:Name"
+    values = var.configs.route_table_tagnames
+  }
+}
+
+
 data "aws_iam_role" "batch_service_role" {
   name = "AWSBatchServiceRole"
 }
@@ -22,4 +32,9 @@ data "aws_iam_role" "batch_service_role" {
 # S3: task-policyが空だとダメなので（使わないけど)S3の権限を付与
 data "aws_s3_bucket" "test_bucket" {
   bucket = "test.seesoft.co.jp"
+}
+
+# エンドポイント用セキュリティグループ
+data "aws_security_group" "endpoint" {
+  id = var.configs.security_group_id_for_endpoint
 }
