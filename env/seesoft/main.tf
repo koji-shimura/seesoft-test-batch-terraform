@@ -55,7 +55,7 @@ locals {
     batch = {
       computing_env = {
           min_vcpus     = 0
-          max_vcpus     = 1
+          max_vcpus     = 2    # If it's set to 1 it won't work, so set to at least 2
           desired_vcpus = 0
       }
       job = {
