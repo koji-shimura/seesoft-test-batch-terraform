@@ -55,8 +55,8 @@ locals {
     batch = {
       computing_env = {
           min_vcpus     = 0
-          max_vcpus     = 2
-          desired_vcpus = 2
+          max_vcpus     = 1
+          desired_vcpus = 0
       }
       job = {
         timeouts = 600
