@@ -34,7 +34,7 @@ resource "aws_vpc_endpoint" "vpc_endpoints_for_interface" {
   vpc_endpoint_type = "Interface"
 
   security_group_ids = [
-    data.aws_security_group.endpoint.id,
+    aws_security_group.security_groups["end_point"].id
   ]
 
   subnet_ids = [for subnet in data.aws_subnet.private_subnets : subnet.id]

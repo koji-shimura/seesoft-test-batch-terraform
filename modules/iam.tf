@@ -6,7 +6,7 @@ resource "aws_iam_role" "ci" {
   assume_role_policy = templatefile(
     "${path.module}/json/ci_assume_policy.json",
     {
-      ci_provider_arn = var.configs.ci.provider_arn
+      ci_provider_arn = aws_iam_openid_connect_provider.github_actions.arn
       ci_org_name     = var.configs.ci.org_name
       ci_repo_name    = var.project
     }
