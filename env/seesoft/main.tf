@@ -57,6 +57,12 @@ locals {
 	    max_vcpus     = 1
 	    desired_vcpus = 1
     }
+    cloudwatch = {
+      log = {
+        group_name        = local.project
+        retention_in_days = 7
+      }
+    }
   }
 }
 
