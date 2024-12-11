@@ -1,5 +1,15 @@
 {
     "Version": "2012-10-17",
     "Statement": [
+        {
+            "Sid": "s30",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "${bucket_arn}/*"
+            ]
+        }
     ]
 }
