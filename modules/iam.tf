@@ -83,7 +83,9 @@ resource "aws_iam_policy" "policies" {
       name = "${var.project}-task-policy",
       policy = templatefile(
         "${path.module}/json/task_policy.json",
-        {}
+        {
+          bucket_arn = data.aws_s3_bucket.test_bucket.arn
+        }
       )
     }
     #event = {
