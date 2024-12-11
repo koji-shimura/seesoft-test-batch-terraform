@@ -60,7 +60,7 @@ resource "aws_batch_job_definition" "job_definition" {
   container_properties = templatefile("${path.module}/json/container.json",
     {
       image = var.configs.batch.job.image,
-      role  = aws_iam_role.iam_roles["job"].arn
+      role  = aws_iam_role.roles["job"].arn
   })
   tags = {
     project = var.project
