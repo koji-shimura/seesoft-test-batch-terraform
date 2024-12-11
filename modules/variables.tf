@@ -17,12 +17,10 @@ data "aws_subnet" "private_subnets" {
 
 # VPCエンドポイント(Gateway)用
 data "aws_route_tables" "route_tables" {
-  for_each = var.configs.route_tables_tagnames
-
   vpc_id = var.vpc_id
   filter {
     name   = "tag:Name"
-    values = [each.value]
+    values = var.configs.route_table_tagnames
   }
 }
 

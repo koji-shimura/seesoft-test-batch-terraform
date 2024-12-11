@@ -59,7 +59,7 @@ resource "aws_vpc_endpoint" "vpc_endpoints_for_gateway" {
   service_name      = each.value.service
   vpc_endpoint_type = "Gateway"
 
-  route_table_ids = [for route_table in data.aws_route_tables.route_tables : route_table.id]
+  route_table_ids = data.aws_route_tables.route_tables.ids
 
   tags = {
     Name = each.value.name

@@ -48,12 +48,13 @@ locals {
       c = "SS-Test-01.private-1c"
       d = "SS-Test-01.private-1d"
     }
-    route_tables_tagnames = {
-      a = "SS-Test-01-private-1a"
-      c = "SS-Test-01-private-1c"
-      d = "SS-Test-01-private-1d"
-    }
-    # エンドポイント用セキュリティグループ(SS-Test-01.Inter3FargateTest_endpoints)のID
+    # Gateway型エンドポイント用ルートテーブルのNameタグ値
+    route_table_tagnames = [
+      "SS-Test-01-private-1a",
+      "SS-Test-01-private-1c",
+      "SS-Test-01-private-1d",
+    ]
+    # Interface型エンドポイント用セキュリティグループ(SS-Test-01.Inter3FargateTest_endpoints)のID
     security_group_id_for_endpoint = "sg-0181dfd20a29ebe73"
     ci = {
       provider_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:oidc-provider/token.actions.githubusercontent.com"
