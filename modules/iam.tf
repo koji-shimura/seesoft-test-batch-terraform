@@ -1,4 +1,6 @@
-### IAM CI role
+#################################################################################################
+# role and policy for CI(GithubActions)
+#################################################################################################
 resource "aws_iam_role" "ci" {
   name               = "${var.project}-github-actions"
   assume_role_policy = templatefile(
@@ -13,8 +15,6 @@ resource "aws_iam_role" "ci" {
     Name = var.project
   }
 }
-
-### IAM CI policy
 resource "aws_iam_policy" "ci" {
   name        = "${var.project}-github-actions"
   path        = "/"
@@ -26,17 +26,16 @@ resource "aws_iam_policy" "ci" {
     }
   )
 }
-
-### IAM CI policy attach
 resource "aws_iam_role_policy_attachment" "ci" {
   role       = aws_iam_role.ci.name
   policy_arn = aws_iam_policy.ci.arn
 }
 
 
-
+#################################################################################################
+# role and policy for Computing Environment, Job Definition
+#################################################################################################
 resource "aws_iam_role" "roles" {
-  #depends_on = [aws_iam_policy.policies]
   for_each = {
     compute_env = {
       name        = "${var.project}-compute-env-instance-role",
@@ -45,6 +44,15 @@ resource "aws_iam_role" "roles" {
       assume_role_policy = templatefile(
         "${path.module}/json/assume_policy.json",
         { service = "ec2.amazonaws.com" }
+      )
+    }
+    job = {
+      name        = "${var.project}-job-role",
+      path        = "/",
+      description = "Allows EC2 instances in an ECS cluster to access ECS, as instance-role for the job of ${var.project}.",
+      assume_role_policy = templatefile(
+        "${path.module}/json/assume_policy.json",
+        { service = "ecs-tasks.amazonaws.com" }
       )
     }
     #event = {
@@ -69,33 +77,51 @@ resource "aws_iam_role" "roles" {
 }
 
 ### iam policy
-#resource "aws_iam_policy" "policies" {
-#  for_each = {
-#    event = {
-#      name = "${var.project}-cloudwatch-policy",
-#      policy = templatefile(
-#        "${path.module}/json/events_policy.json",
-#        {}
-#      )
-#    }
-#  }
-#
-#  path   = "/"
-#  name   = each.value.name
-#  policy = each.value.policy
-#  tags = {
-#    Name = each.value.name
-#  }
-#}
+resource "aws_iam_policy" "policies" {
+  for_each = {
+    job = {
+      name = "${var.project}-task-policy",
+      policy = templatefile(
+        "${path.module}/json/task_policy.json",
+        {}
+      )
+    }
+    #event = {
+    #  name = "${var.project}-cloudwatch-policy",
+    #  policy = templatefile(
+    #    "${path.module}/json/events_policy.json",
+    #    {}
+    #  )
+    #}
+  }
+
+  path   = "/"
+  name   = each.value.name
+  policy = each.value.policy
+  tags = {
+    Name = each.value.name
+  }
+}
 
 resource "aws_iam_role_policy_attachment" "policy_attachments" {
-  depends_on = [aws_iam_role.roles]
+  depends_on = [aws_iam_role.roles, aws_iam_policy.policies]
   for_each = {
-    compute_env = { policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role" },
+    compute_env = {
+      role_name = aws_iam_role.roles["compute_env"].name,
+      policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role" 
+    }
+    job = {
+      role_name = aws_iam_role.roles["job"].name,
+      policy_arn = aws_iam_policy.policies["job"].arn
+    }
+    job2 = {
+      role_name = aws_iam_role.roles["job"].name,
+      policy_arn = "arn:aws:iam::aws:policy/AWSOpsWorksCloudWatchLogs"
+    }
     #event      = { policy_arn = aws_iam_policy.policies["event"].arn }
   }
 
-  role       = aws_iam_role.roles[each.key].name
+  role       = each.value.role_name
   policy_arn = each.value.policy_arn
 }
 
