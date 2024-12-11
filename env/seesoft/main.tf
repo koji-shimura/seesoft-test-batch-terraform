@@ -52,10 +52,20 @@ locals {
       provider_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:oidc-provider/token.actions.githubusercontent.com"
       org_name     = "koji-shimura"
     }
-    batch_computing_env = {
-	    min_vcpus     = 0
-	    max_vcpus     = 1
-	    desired_vcpus = 1
+    batch = {
+      computing_env = {
+          min_vcpus     = 0
+          max_vcpus     = 1
+          desired_vcpus = 1
+      }
+
+      #image      = "${var.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/${var.env_config.common_project_name}:latest"
+      #app_config = "configs/${local.project}/${var.env_config.env_formal}.yaml"
+      #batches = {
+      #  crawler    = { name = "${local.project}-crawler", cron = "cron(0,30 * * * ? *)", duration = 1800 }
+      #  translator = { name = "${local.project}-translator", cron = "cron(10,40 * * * ? *)", duration = 1800 }
+      #  sender     = { name = "${local.project}-sender", cron = "cron(20,50 * * * ? *)", duration = 1800 }
+      #}
     }
     cloudwatch = {
       log = {
