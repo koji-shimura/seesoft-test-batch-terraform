@@ -55,15 +55,15 @@ resource "aws_iam_role" "roles" {
         { service = "ecs-tasks.amazonaws.com" }
       )
     }
-    #event = {
-    #  name        = "${var.project}-cloudwatch-role",
-    #  path        = "/service-role/",
-    #  description = null,
-    #  assume_role_policy = templatefile(
-    #    "${path.module}/json/assume_policy.json",
-    #    { service = "events.amazonaws.com" }
-    #  )
-    #}
+    lambda = {
+      name        = "${var.project}-monitoring-lambda-role",
+      path        = "/",
+      description = "Allows Lambda to access ECS Task for the job of ${var.project}.",
+      assume_role_policy = templatefile(
+        "${path.module}/json/assume_policy.json",
+        { service = "lambda.amazonaws.com" }
+      )
+    }
   }
 
   name                 = each.value.name
@@ -110,7 +110,7 @@ resource "aws_iam_role_policy_attachment" "policy_attachments" {
   for_each = {
     compute_env = {
       role_name = aws_iam_role.roles["compute_env"].name,
-      policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role" 
+      policy_arn = data.aws_iam_policy.container_service.arn
     }
     job = {
       role_name = aws_iam_role.roles["job"].name,
@@ -118,9 +118,12 @@ resource "aws_iam_role_policy_attachment" "policy_attachments" {
     }
     job2 = {
       role_name = aws_iam_role.roles["job"].name,
-      policy_arn = "arn:aws:iam::aws:policy/AWSOpsWorksCloudWatchLogs"
+      policy_arn = data.aws_iam_policy.cloudwatch_log.arn
     }
-    #event      = { policy_arn = aws_iam_policy.policies["event"].arn }
+    lambda = {
+      role_name = aws_iam_role.roles["lambda"].name,
+      policy_arn = data.aws_iam_policy.lambda_basic.arn
+    }
   }
 
   role       = each.value.role_name
