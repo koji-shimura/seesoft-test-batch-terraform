@@ -37,6 +37,22 @@ data "aws_iam_role" "batch_service_role" {
   name = "AWSBatchServiceRole"
 }
 
+data "aws_iam_policy" "container_service" {
+  name = "AmazonEC2ContainerServiceforEC2Role"
+}
+
+data "aws_iam_policy" "cloudwatch_log" {
+  name = "AWSOpsWorksCloudWatchLogs"
+}
+
+
+# Lambda実行用ポリシー
+data "aws_iam_policy" "lambda_basic" {
+  name = "AWSLambdaBasicExecutionRole"
+}
+
+
+
 # S3: task-policyが空だとダメなので（使わないけど)S3の権限を付与
 data "aws_s3_bucket" "test_bucket" {
   bucket = "test.seesoft.co.jp"
