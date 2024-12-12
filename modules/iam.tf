@@ -56,7 +56,7 @@ resource "aws_iam_role" "roles" {
       )
     }
     lambda = {
-      name        = "${var.project}-monitoring-lambda-role",
+      name        = "${var.project}-event-monitoring-lambda-role",
       path        = "/",
       description = "Allows Lambda to access ECS Task for the job of ${var.project}.",
       assume_role_policy = templatefile(
