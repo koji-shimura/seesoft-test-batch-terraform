@@ -1,42 +1,21 @@
 #################################################################################################
-# role and policy for CI(GithubActions)
-#################################################################################################
-resource "aws_iam_role" "ci" {
-  name               = "${var.project}-github-actions"
-  assume_role_policy = templatefile(
-    "${path.module}/json/ci_assume_policy.json",
-    {
-      ci_provider_arn = data.aws_iam_openid_connect_provider.github_actions.arn
-      ci_org_name     = var.configs.ci.org_name
-      ci_repo_name    = var.project
-    }
-  )
-  tags               = {
-    Name = var.project
-  }
-}
-resource "aws_iam_policy" "ci" {
-  name        = "${var.project}-github-actions"
-  path        = "/"
-  description = "${var.project}-github-actions"
-  policy      = templatefile(
-    "${path.module}/json/ci_policy.json",
-    {
-      ecr_arn = aws_ecr_repository.ecr_repository.arn
-    }
-  )
-}
-resource "aws_iam_role_policy_attachment" "ci" {
-  role       = aws_iam_role.ci.name
-  policy_arn = aws_iam_policy.ci.arn
-}
-
-
-#################################################################################################
 # role and policy for Computing Environment, Job Definition
 #################################################################################################
 resource "aws_iam_role" "roles" {
   for_each = {
+    ci = {
+      name        = "${var.project}-github-actions"
+      path        = "/",
+      description = "Allows the openid provider to github repository ${var.configs.ci.org_name}.",
+      assume_role_policy = templatefile(
+        "${path.module}/json/ci_assume_policy.json",
+        {
+          ci_provider_arn = data.aws_iam_openid_connect_provider.github_actions.arn
+          ci_org_name     = var.configs.ci.org_name
+          ci_repo_name    = var.project
+        }
+      )
+    }
     compute_env = {
       name        = "${var.project}-compute-env-instance-role",
       path        = "/",
@@ -79,8 +58,19 @@ resource "aws_iam_role" "roles" {
 ### iam policy
 resource "aws_iam_policy" "policies" {
   for_each = {
+    ci = {
+      name        = "${var.project}-github-actions",
+      description = "${var.project}-github-actions",
+      policy      = templatefile(
+        "${path.module}/json/ci_policy.json",
+        {
+          ecr_arn = aws_ecr_repository.ecr_repository.arn
+        }
+      )
+    }
     job = {
       name = "${var.project}-task-policy",
+      description = "${var.project}-task-policy",
       policy = templatefile(
         "${path.module}/json/task_policy.json",
         {
@@ -99,6 +89,7 @@ resource "aws_iam_policy" "policies" {
 
   path   = "/"
   name   = each.value.name
+  description = each.value.description
   policy = each.value.policy
   tags = {
     Name = each.value.name
@@ -108,6 +99,10 @@ resource "aws_iam_policy" "policies" {
 resource "aws_iam_role_policy_attachment" "policy_attachments" {
   depends_on = [aws_iam_role.roles, aws_iam_policy.policies]
   for_each = {
+    ci = {
+      role_name = aws_iam_role.roles["ci"].name,
+      policy_arn = aws_iam_policy.policies["ci"].arn
+    }
     compute_env = {
       role_name = aws_iam_role.roles["compute_env"].name,
       policy_arn = data.aws_iam_policy.container_service.arn

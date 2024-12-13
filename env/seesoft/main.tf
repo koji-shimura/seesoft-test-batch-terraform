@@ -68,12 +68,16 @@ locals {
         image    = "${local.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/${local.project}:latest"
       }
     }
-    cloudwatch = {
-      log = {
-        group_name        = local.project
-        retention_in_days = 7
-      }
+    lambda = {
+      slack_webhook_url           = "https://hooks.slack.com/services/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"
+      environment_in_post_message = "seesoft"
     }
+    #cloudwatch = {
+    #  log = {
+    #    group_name        = local.project
+    #    retention_in_days = 7
+    #  }
+    #}
   }
 }
 
