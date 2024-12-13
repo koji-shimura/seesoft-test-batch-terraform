@@ -7,4 +7,11 @@ resource "aws_ssm_parameter" "slack_webhook_url" {
   tags = {
     Name = "${var.project}-slack-webhook-url"
   }
+
+  lifecycle {
+    ignore_changes = [
+      value
+    ]
+  }
+
 }
