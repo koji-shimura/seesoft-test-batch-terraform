@@ -57,3 +57,12 @@ data "aws_iam_policy" "lambda_basic" {
 data "aws_s3_bucket" "test_bucket" {
   bucket = "test.seesoft.co.jp"
 }
+
+
+
+# Create Lambda ZIP
+data "archive_file" "seesoft-test-batch-post-slack" {  
+  type = "zip"  
+  source_file = "${path.module}/code/seesoft-test-batch-post-slack.py" 
+  output_path = "seesoft-test-batch-post-slack.zip"
+}
