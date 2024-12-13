@@ -69,8 +69,8 @@ locals {
       }
     }
     lambda = {
-      slack_webhook_url           = "https://hooks.slack.com/services/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"
-      environment_in_post_message = "seesoft"
+      slack_webhook_parameter_name = "${local.project}-slack-webhook-url"
+      environment_in_post_message  = "seesoft"
     }
     #cloudwatch = {
     #  log = {

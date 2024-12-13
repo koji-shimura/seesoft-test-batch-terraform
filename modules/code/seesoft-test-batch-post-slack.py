@@ -7,8 +7,12 @@ import urllib.request
 from datetime import datetime, timezone, timedelta
 
 def lambda_handler(event, context):
-    slack_webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
+    slack_webhook_parameter_name = os.environ.get("SLACK_WEBHOOK_PARAMETER_NAME")
     env = os.environ.get("ENVIRONMENT")
+    region = os.environ.get("REGION")
+
+	slack_webhook_url = get_parameter(slack_webhook_parameter_name, region)
+    print(f'### Param=[{slack_webhook_url}]')
 
     print (event)
     event_detail = event['detail']
@@ -26,6 +30,15 @@ def lambda_handler(event, context):
         print(message)
         
         send_slack_notification(slack_webhook_url, message)
+
+def get_parameter(parameter_name, region):
+    ssm = boto3.client('ssm', region)
+    response = ssm.get_parameters(
+        Names=[parameter_name],
+        WithDecryption=True
+    )
+    for parameter in response['Parameters']:
+        return parameter['Value']
 
 def send_slack_notification(webhook_url, message):
     payload = {
