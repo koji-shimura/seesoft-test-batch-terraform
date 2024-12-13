@@ -8,8 +8,9 @@ resource "aws_lambda_function" "post_slack" {
   timeout          = 30
   environment {
     variables = {
-      SLACK_WEBHOOK_URL = var.configs.lambda.slack_webhook_url
-      ENVIRONMENT       = var.configs.lambda.environment_in_post_message
+      REGION                       = var.region
+      SLACK_WEBHOOK_PARAMETER_NAME = var.configs.lambda.slack_webhook_parameter_name
+      ENVIRONMENT                  = var.configs.lambda.environment_in_post_message
     }
   }
 }
