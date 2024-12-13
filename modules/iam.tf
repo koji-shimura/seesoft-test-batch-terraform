@@ -84,7 +84,7 @@ resource "aws_iam_policy" "policies" {
       policy = templatefile(
         "${path.module}/json/monitoring-lambda-policy.json",
         {
-          parameter_arn = "arn:aws:ssm:ap-northeast-1:119395085688:parameter/seesoft-test-batch-slack-webhook-url"
+          parameter_arn = aws_ssm_parameter.slack_webhook_url.arn
         }
       )
     }
