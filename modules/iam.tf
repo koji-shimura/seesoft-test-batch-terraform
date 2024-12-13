@@ -78,6 +78,16 @@ resource "aws_iam_policy" "policies" {
         }
       )
     }
+    lambda = {
+      name        = "${var.project}-event-monitoring-lambda-policy",
+      description = "${var.project}-event-monitoring-lambda-policy",
+      policy = templatefile(
+        "${path.module}/json/monitoring-lambda-policy.json",
+        {
+          parameter_arn = "arn:aws:ssm:ap-northeast-1:119395085688:parameter/seesoft-test-batch-slack-webhook-url"
+        }
+      )
+    }
     #event = {
     #  name = "${var.project}-cloudwatch-policy",
     #  policy = templatefile(
@@ -118,6 +128,10 @@ resource "aws_iam_role_policy_attachment" "policy_attachments" {
     lambda = {
       role_name = aws_iam_role.roles["lambda"].name,
       policy_arn = data.aws_iam_policy.lambda_basic.arn
+    }
+    lambda2 = {
+      role_name = aws_iam_role.roles["lambda"].name,
+      policy_arn = aws_iam_policy.policies["lambda"].arn
     }
   }
 

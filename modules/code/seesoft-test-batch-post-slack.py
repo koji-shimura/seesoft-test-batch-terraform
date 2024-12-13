@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     env = os.environ.get("ENVIRONMENT")
     region = os.environ.get("REGION")
 
-	slack_webhook_url = get_parameter(slack_webhook_parameter_name, region)
+    slack_webhook_url = get_parameter(slack_webhook_parameter_name, region)
     print(f'### Param=[{slack_webhook_url}]')
 
     print (event)
