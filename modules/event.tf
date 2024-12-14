@@ -1,6 +1,6 @@
 ## EventBridge rule
 resource "aws_cloudwatch_event_rule" "batch_failed_monitoring" {
-  name        = "${var.project_id}-batch-failed-monitoring"
+  name        = "${var.project}-batch-failed-monitoring"
   description = "Capture each Batch job state change to FAILED"
 
   event_pattern = jsonencode({
@@ -15,7 +15,7 @@ resource "aws_cloudwatch_event_rule" "batch_failed_monitoring" {
   })
 
   tags = {
-    Name = "${var.project_id}-event-monitoring"
+    Name = "${var.project}-event-monitoring"
   }
 
 }
