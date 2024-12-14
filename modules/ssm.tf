@@ -1,11 +1,11 @@
 resource "aws_ssm_parameter" "slack_webhook_url" {
-  name        = "/${var.project}/slack-webhook-url"
-  description = "/${var.project}/slack-webhook-url"
+  name        = var.configs.lambda.slack_webhook_parameter_name
+  description = var.configs.lambda.slack_webhook_parameter_name
   tier        = "Standard"
   type        = "SecureString"
   value       = "<It is assumed that this will be set manually from the console>"
   tags = {
-    Name = "/${var.project}/slack-webhook-url"
+    Name = var.configs.lambda.slack_webhook_parameter_name
   }
 
   lifecycle {
