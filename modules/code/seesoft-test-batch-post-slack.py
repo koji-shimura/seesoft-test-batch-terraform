@@ -59,6 +59,6 @@ def send_slack_notification(webhook_url, message):
     except urllib.error.URLError as err:
         print(f"Slack通知の送信に失敗しました。理由: {err.reason}")
     except Exception as err:
-        print(errn)
+        print(err)
     else:
         print("Slack通知が正常に送信されました。")
