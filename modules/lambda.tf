@@ -1,3 +1,4 @@
+# Lambda関数
 resource "aws_lambda_function" "post_slack" {
   function_name    = "seesoft-test-batch-post-slack"
   filename         = "seesoft-test-batch-post-slack.zip"
@@ -13,4 +14,12 @@ resource "aws_lambda_function" "post_slack" {
       ENVIRONMENT                  = var.configs.lambda.environment_in_post_message
     }
   }
+}
+
+# Lambda関数をEventBridgeルールによって呼び出せるようにするための権限付与
+resource "aws_lambda_permission" "to_event_rule" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.post_slack.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.batch_failed_monitoring.arn
 }
