@@ -74,7 +74,8 @@ resource "aws_iam_policy" "policies" {
       policy = templatefile(
         "${path.module}/json/task_policy.json",
         {
-          bucket_arn = data.aws_s3_bucket.test_bucket.arn
+          bucket_arn = data.aws_s3_bucket.test_bucket.arn,
+          lock_table_arn = aws_dynamodb_table.lock_table.arn
         }
       )
     }
