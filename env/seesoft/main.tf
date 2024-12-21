@@ -73,7 +73,7 @@ locals {
       environment_in_post_message  = "seesoft"
     }
     dynamodb = {
-      table_name = "${local.project}-lock" }
+      table_name = "${local.project}-lock"
     }
   }
 }
