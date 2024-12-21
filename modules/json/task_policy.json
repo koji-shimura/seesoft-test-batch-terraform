@@ -16,7 +16,7 @@
             "Action": [
                 "dynamodb:PutItem*",
                 "dynamodb:DeleteItem*"
-            ]
+            ],
             "Resource": "${lock_table_arn}"
         },
         {
