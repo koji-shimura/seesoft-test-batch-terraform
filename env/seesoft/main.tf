@@ -72,12 +72,9 @@ locals {
       slack_webhook_parameter_name = "/${local.project}/slack-webhook-url"
       environment_in_post_message  = "seesoft"
     }
-    #cloudwatch = {
-    #  log = {
-    #    group_name        = local.project
-    #    retention_in_days = 7
-    #  }
-    #}
+    dynamodb = {
+      table_name = "${local.project}-lock"
+    }
   }
 }
 
