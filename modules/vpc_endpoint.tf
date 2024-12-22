@@ -50,7 +50,6 @@ resource "aws_vpc_endpoint" "vpc_endpoints_for_interface" {
   vpc_id              = var.vpc_id
   service_name        = each.value.service
   vpc_endpoint_type   = "Interface"
-  private_dns_enabled = each.value.private_dns_enabled
 
   security_group_ids = [
     aws_security_group.security_groups["end_point"].id
@@ -58,7 +57,7 @@ resource "aws_vpc_endpoint" "vpc_endpoints_for_interface" {
 
   subnet_ids = [for subnet in data.aws_subnet.private_subnets : subnet.id]
 
-  private_dns_enabled = true
+  private_dns_enabled = each.value.private_dns_enabled
 
   tags = {
     Name = each.value.name
