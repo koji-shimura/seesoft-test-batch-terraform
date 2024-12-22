@@ -4,7 +4,10 @@
     "memory": 500,
     "command": [
         "python",
-        "main.py",
+        "app/main.py",
+        "-c",
+        "seesoft.yaml",
+        "-r",
         "0"
     ],
     "jobRoleArn": "${role}",
