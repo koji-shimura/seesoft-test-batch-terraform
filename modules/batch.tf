@@ -65,9 +65,9 @@ resource "aws_batch_job_definition" "job_definition" {
     Name    = "${var.project}-job"
   }
 
-  lifecycle {
-    ignore_changes = [
-      container_properties
-    ]
-  }
+  #lifecycle {
+  #  ignore_changes = [
+  #    container_properties
+  #  ]
+  #}
 }
